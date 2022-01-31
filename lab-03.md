@@ -1,7 +1,7 @@
 Lab 03 - Nobel laureates
 ================
-Insert your name here
-Insert date here
+Alex Connolly
+2-Feb-2022
 
 ### Load packages and data
 
