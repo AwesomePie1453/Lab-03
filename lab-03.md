@@ -13,33 +13,136 @@ library(tidyverse)
 nobel <- read_csv("data/nobel.csv")
 ```
 
+    ## Rows: 935 Columns: 26
+
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr  (21): firstname, surname, category, affiliation, city, country, gender,...
+    ## dbl   (3): id, year, share
+    ## date  (2): born_date, died_date
+
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
 ## Exercises
 
 ### Exercise 1
 
-Remove this text, and add your answer for Exercise 1 here. Add code
-chunks as needed. Don’t forget to label your code chunk. Do not use
-spaces in code chunk labels.
+``` r
+summary(nobel)
+```
+
+    ##        id         firstname           surname               year     
+    ##  Min.   :  1.0   Length:935         Length:935         Min.   :1901  
+    ##  1st Qu.:234.5   Class :character   Class :character   1st Qu.:1947  
+    ##  Median :470.0   Mode  :character   Mode  :character   Median :1976  
+    ##  Mean   :475.1                                         Mean   :1970  
+    ##  3rd Qu.:716.5                                         3rd Qu.:1999  
+    ##  Max.   :969.0                                         Max.   :2018  
+    ##                                                                      
+    ##    category         affiliation            city             country         
+    ##  Length:935         Length:935         Length:935         Length:935        
+    ##  Class :character   Class :character   Class :character   Class :character  
+    ##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+    ##                                                                             
+    ##                                                                             
+    ##                                                                             
+    ##                                                                             
+    ##    born_date            died_date             gender         
+    ##  Min.   :1817-11-30   Min.   :1903-11-01   Length:935        
+    ##  1st Qu.:1890-12-25   1st Qu.:1955-08-02   Class :character  
+    ##  Median :1916-06-28   Median :1983-03-09   Mode  :character  
+    ##  Mean   :1910-11-02   Mean   :1977-03-30                     
+    ##  3rd Qu.:1935-07-10   3rd Qu.:2004-07-24                     
+    ##  Max.   :1997-07-12   Max.   :2019-08-07                     
+    ##  NA's   :33           NA's   :308                            
+    ##   born_city         born_country       born_country_code   died_city        
+    ##  Length:935         Length:935         Length:935         Length:935        
+    ##  Class :character   Class :character   Class :character   Class :character  
+    ##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+    ##                                                                             
+    ##                                                                             
+    ##                                                                             
+    ##                                                                             
+    ##  died_country       died_country_code  overall_motivation     share      
+    ##  Length:935         Length:935         Length:935         Min.   :1.000  
+    ##  Class :character   Class :character   Class :character   1st Qu.:1.000  
+    ##  Mode  :character   Mode  :character   Mode  :character   Median :2.000  
+    ##                                                           Mean   :1.991  
+    ##                                                           3rd Qu.:3.000  
+    ##                                                           Max.   :4.000  
+    ##                                                                          
+    ##   motivation        born_country_original born_city_original
+    ##  Length:935         Length:935            Length:935        
+    ##  Class :character   Class :character      Class :character  
+    ##  Mode  :character   Mode  :character      Mode  :character  
+    ##                                                             
+    ##                                                             
+    ##                                                             
+    ##                                                             
+    ##  died_country_original died_city_original city_original      country_original  
+    ##  Length:935            Length:935         Length:935         Length:935        
+    ##  Class :character      Class :character   Class :character   Class :character  
+    ##  Mode  :character      Mode  :character   Mode  :character   Mode  :character  
+    ##                                                                                
+    ##                                                                                
+    ##                                                                                
+    ## 
+
+935 observations, each row is a laureate, 26 variables
 
 ### Exercise 2
 
-Remove this text, and add your answer for Exercise 1 here. Add code
-chunks as needed. Don’t forget to label your code chunk. Do not use
-spaces in code chunk labels.
+``` r
+nobel_living <- nobel
+nobel_living %>% 
+  filter(country != "NA") %>%
+  filter(gender != "org") %>%
+  filter(is.na(died_date))
+```
+
+    ## # A tibble: 228 × 26
+    ##       id firstname   surname  year category affiliation city  country born_date 
+    ##    <dbl> <chr>       <chr>   <dbl> <chr>    <chr>       <chr> <chr>   <date>    
+    ##  1    68 Chen Ning   Yang     1957 Physics  Institute … Prin… USA     1922-09-22
+    ##  2    69 Tsung-Dao   Lee      1957 Physics  Columbia U… New … USA     1926-11-24
+    ##  3    95 Leon N.     Cooper   1972 Physics  Brown Univ… Prov… USA     1930-02-28
+    ##  4    97 Leo         Esaki    1973 Physics  IBM Thomas… York… USA     1925-03-12
+    ##  5    98 Ivar        Giaever  1973 Physics  General El… Sche… USA     1929-04-05
+    ##  6    99 Brian D.    Joseph…  1973 Physics  University… Camb… United… 1940-01-04
+    ##  7   101 Antony      Hewish   1974 Physics  University… Camb… United… 1924-05-11
+    ##  8   103 Ben R.      Mottel…  1975 Physics  Nordita     Cope… Denmark 1926-07-09
+    ##  9   106 Samuel C.C. Ting     1976 Physics  Massachuse… Camb… USA     1936-01-27
+    ## 10   107 Philip W.   Anders…  1977 Physics  Bell Telep… Murr… USA     1923-12-13
+    ## # … with 218 more rows, and 17 more variables: died_date <date>, gender <chr>,
+    ## #   born_city <chr>, born_country <chr>, born_country_code <chr>,
+    ## #   died_city <chr>, died_country <chr>, died_country_code <chr>,
+    ## #   overall_motivation <chr>, share <dbl>, motivation <chr>,
+    ## #   born_country_original <chr>, born_city_original <chr>,
+    ## #   died_country_original <chr>, died_city_original <chr>, city_original <chr>,
+    ## #   country_original <chr>
+
+``` r
+nobel_living <- nobel_living %>%
+  mutate(country_us = if_else(country == "USA", "USA", "Other"))
+```
+
+``` r
+nobel_living_science <- nobel_living %>%
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
+```
 
 ### Exercise 3
 
-Remove this text, and add your answer for Exercise 1 here. Add code
-chunks as needed. Don’t forget to label your code chunk. Do not use
-spaces in code chunk labels.
-
 ### Exercise 4
 
-…
+``` r
+nobel_living <- nobel_living %>%
+  mutate(born_country_us = if_else(born_country == "USA", "USA", "Other"))
+```
 
 ### Exercise 5
-
-…
 
 ### Exercise 6
 
