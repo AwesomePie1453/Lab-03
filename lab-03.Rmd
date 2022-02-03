@@ -41,13 +41,18 @@ nobel_living <- nobel_living %>%
 ```
 ```{r Topics}
 nobel_living_science <- nobel_living %>%
-  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics")) %>%
+  filter(! is.na(country_us))
 ```
 
 ### Exercise 3
 
 
-
+```{r facet-bar}
+nobel_living_science %>%
+  ggplot(mapping=aes(x = country_us)) + geom_histogram(stat="count", fill="dark red") + facet_wrap(~ category) + coord_flip()
+```
+It seems as if Buzzfeed is wrong, as besides economics, there appears to be an equal amount of other countries and US recipients
 
 ### Exercise 4
 
@@ -56,14 +61,41 @@ nobel_living <- nobel_living %>%
   mutate(born_country_us = if_else(born_country == "USA", "USA", "Other"))
 ```
 
+```{r summary2}
+nobel_living %>%
+  select(born_country_us)
+ summary(as.factor(nobel_living$born_country_us))
+```
+271 were bron in the US
 
 ### Exercise 5
 
-```{r}
-
+```{r another-mutate}
+nobel_living_science <- nobel_living %>%
+  mutate(born_country_us = if_else(born_country == "USA", "USA", "Other"))
+```
+```{r Topics2}
+nobel_living_science <- nobel_living %>%
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics")) %>%
+  filter(! is.na(country_us))
 ```
 
-
+```{r new-variable}
+nobel_living_science %>%
+  ggplot(mapping=aes(x = country_us, fill=born_country_us)) + geom_histogram(stat="count", position = "stack") + facet_wrap(~ category) + coord_flip()
+```
+This does not exactly support Buzzfeed's claim. The first claim is that most living laureates  were based in the US when they were born. The above graph shows that that is only true for economics, pretty much all of the others were even. And while there are a lot of people born outside of the US who got the award, of the ones who received it in US, most were born in the US. 
 ### Exercise 6
 
-...
+```{r frequency}
+nobel_living_science %>%
+  filter(country_us == "USA") %>%
+  filter(born_country_us == "Other") %>%
+  count(born_country) %>%
+  arrange(desc(n))
+  
+```
+
+United Kingdom has the most!
+
+

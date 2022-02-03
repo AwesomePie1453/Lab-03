@@ -130,10 +130,22 @@ nobel_living <- nobel_living %>%
 
 ``` r
 nobel_living_science <- nobel_living %>%
-  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics")) %>%
+  filter(! is.na(country_us))
 ```
 
 ### Exercise 3
+
+``` r
+nobel_living_science %>%
+  ggplot(mapping=aes(x = country_us)) + geom_histogram(stat="count", fill="dark red") + facet_wrap(~ category) + coord_flip()
+```
+
+    ## Warning: Ignoring unknown parameters: binwidth, bins, pad
+
+![](lab-03_files/figure-gfm/facet-bar-1.png)<!-- --> It seems as if
+Buzzfeed is wrong, as besides economics, there appears to be an equal
+amount of other countries and US recipients
 
 ### Exercise 4
 
@@ -142,8 +154,84 @@ nobel_living <- nobel_living %>%
   mutate(born_country_us = if_else(born_country == "USA", "USA", "Other"))
 ```
 
+``` r
+nobel_living %>%
+  select(born_country_us)
+```
+
+    ## # A tibble: 935 × 1
+    ##    born_country_us
+    ##    <chr>          
+    ##  1 Other          
+    ##  2 Other          
+    ##  3 Other          
+    ##  4 Other          
+    ##  5 Other          
+    ##  6 Other          
+    ##  7 Other          
+    ##  8 Other          
+    ##  9 Other          
+    ## 10 Other          
+    ## # … with 925 more rows
+
+``` r
+ summary(as.factor(nobel_living$born_country_us))
+```
+
+    ## Other   USA  NA's 
+    ##   636   271    28
+
+271 were bron in the US
+
 ### Exercise 5
 
-### Exercise 6
+``` r
+nobel_living_science <- nobel_living %>%
+  mutate(born_country_us = if_else(born_country == "USA", "USA", "Other"))
+```
 
-…
+``` r
+nobel_living_science <- nobel_living %>%
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics")) %>%
+  filter(! is.na(country_us))
+```
+
+``` r
+nobel_living_science %>%
+  ggplot(mapping=aes(x = country_us, fill=born_country_us)) + geom_histogram(stat="count", position = "stack") + facet_wrap(~ category) + coord_flip()
+```
+
+    ## Warning: Ignoring unknown parameters: binwidth, bins, pad
+
+![](lab-03_files/figure-gfm/new-variable-1.png)<!-- --> This does not
+exactly support Buzzfeed’s claim. The first claim is that most living
+laureates were based in the US when they were born. The above graph
+shows that that is only true for economics, pretty much all of the
+others were even. And while there are a lot of people born outside of
+the US who got the award, of the ones who received it in US, most were
+born in the US. \#\#\# Exercise 6
+
+``` r
+nobel_living_science %>%
+  filter(country_us == "USA") %>%
+  filter(born_country_us == "Other") %>%
+  count(born_country) %>%
+  arrange(desc(n))
+```
+
+    ## # A tibble: 37 × 2
+    ##    born_country       n
+    ##    <chr>          <int>
+    ##  1 United Kingdom    15
+    ##  2 Canada            12
+    ##  3 Germany           10
+    ##  4 China              6
+    ##  5 Poland             6
+    ##  6 France             5
+    ##  7 Italy              5
+    ##  8 Japan              5
+    ##  9 Austria            4
+    ## 10 Hungary            4
+    ## # … with 27 more rows
+
+United Kingdom has the most!
